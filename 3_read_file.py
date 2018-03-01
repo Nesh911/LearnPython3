@@ -17,10 +17,3 @@
 #
 # read_file()
 # read_file2()
-
-names = ["vasya", "masha", "qwerty"]
-for x in names:
-    if x == "qwerty":
-        print("what it is?")
-    else:
-        print("hello," + x)
