@@ -1,14 +1,13 @@
 import csv
 
 
-answer = [{"привет": "И тебе привет!", "как дела": "Лучше всех", "пока": "Увидимся"}]
+answer = {"привет": "И тебе привет!", "как дела": "Лучше всех", "пока": "Увидимся"}
 
 with open('export.csv', 'w', encoding='utf-8') as f:
-    fields = ['привет', 'как дела', 'пока']
-    writer = csv.DictWriter(f, fields, delimiter=';')
-    writer.writeheader()
-    for ans in answer:
-        writer.writerow(ans)
+    writer = csv.writer(f, delimiter=':')
+    for f in answer.items():
+        writer.writerow(f)
+
 
 # Вот эту штуку я доработаю еще=)
 # new_dict = []

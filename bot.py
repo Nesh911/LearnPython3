@@ -2,7 +2,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from tokens import bot_token
 import logging, datetime
 import ephem
-import re
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 logging.basicConfig(format='%(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO,
                     filename='bot.log'
@@ -55,25 +55,39 @@ def wordcount(bot, update):
 
 def calc(bot, update):
     quest = update.message.text
-    assert quest.endswith('='), update.message.reply_text("А не забыт ли знак '=' ?")
-    question = quest.replace('=', '')
-    if "+" in question:
-        count = question.split("+")
-        qwe = (int(count[0]) + int(count[1]))
-        update.message.reply_text(qwe)
-    elif "-" in question:
-        count = question.split("-")
-        qwe = (int(count[0]) - int(count[1]))
-        update.message.reply_text(qwe)
-    elif "*" in question:
-        count = question.split("*")
-        qwe = (int(count[0]) * int(count[1]))
-        update.message.reply_text(qwe)
-    elif "/" in question:
-        count = question.split("/")
-        qwe = (int(count[0]) / int(count[1]))
-        update.message.reply_text(qwe)
+    if quest.endswith('='):
+        question = quest.replace('=', '')
+        if "+" in question:
+            count = question.split("+")
+            qwe = (int(count[0]) + int(count[1]))
+            update.message.reply_text(qwe)
+        elif "-" in question:
+            count = question.split("-")
+            qwe = (int(count[0]) - int(count[1]))
+            update.message.reply_text(qwe)
+        elif "*" in question:
+            count = question.split("*")
+            qwe = (int(count[0]) * int(count[1]))
+            update.message.reply_text(qwe)
+        elif "/" in question:
+            count = question.split("/")
+            qwe = (int(count[0]) / int(count[1]))
+            update.message.reply_text(qwe)
+    else:
+        update.message.reply_text("А не забыт ли знак '=' ?")
 
+
+
+def calc_keyboard(bot, update):
+    chat_id = update.message.chat_id
+    custom_keyboard = [['1', '2', '3', '+'],
+                       ['4', '5', '6', '-'],
+                       ['7', '8', '9', '/'],
+                       ['=', '0', '.', '*']]
+    reply_markup = ReplyKeyboardMarkup(custom_keyboard)
+    bot.send_message(chat_id=chat_id,
+                     text="Custom Keyboard Test",
+                     reply_markup=reply_markup)
 
 
 def talk_to_me(bot, update):
@@ -98,7 +112,7 @@ def main(token = bot_token):
     dp.add_handler(CommandHandler("start", greet_user))
     dp.add_handler(CommandHandler("planet", planet))
     dp.add_handler(CommandHandler("wordcount", wordcount))
-    dp.add_handler(CommandHandler("calc", calc))
+    dp.add_handler(CommandHandler("calc", calc_keyboard))
     # dp.add_handler(MessageHandler(Filters.text, talk_to_me))
     dp.add_handler(MessageHandler(Filters.text, calc))
 
